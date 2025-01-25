@@ -30,11 +30,14 @@ class Database:
     def upload_bill(self, data):
         data = {
             "bill_number": data["bill_number"],
+            "name": data["name"],
             "categories": data["categories"],
             "date_submitted": data["date_submitted"],
             "summary": data["summary"],
             "file_url": data["url"],
-            "votes": data["votes"]
+            "votes": data["votes"],
+            "stage": data["stage"],
+            "session": data["session"]
         }
 
         update_time, doc_ref = self.__store.collection("Bills").add(data)
