@@ -100,3 +100,57 @@ document.querySelector("#anitaAnandDiv").addEventListener('click', () => {
     window.location.href = '../html/mp_person.html';
 })
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDhFGSvDL50ISJwhTtPuHFraYZKakorMOc",
+    authDomain: "hackathon-448621.firebaseapp.com",
+    projectId: "hackathon-448621",
+    storageBucket: "hackathon-448621.firebasestorage.app",
+    messagingSenderId: "27974807699",
+    appId: "1:27974807699:web:6f8916629526d75438dd66",
+    measurementId: "G-9N4TEVCL0Q"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getFirestore(app);
+
+// Reference the MPS collection
+const mpsCollection = collection(database, "MPS");
+
+// Fetch MPs data
+async function fetchMPsData() {
+  const snapshot = await getDocs(mpsCollection);
+  const mpsData = {};
+  snapshot.forEach((doc) => {
+    mpsData[doc.id] = doc.data(); // Document ID is the MP's name
+  });
+  return mpsData;
+}
+
+// Update MP cards dynamically
+async function updateMPCards() {
+  const mpsData = await fetchMPsData();
+
+  // Loop through the existing cards
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((card) => {
+    const nameElement = card.querySelector(".name");
+    const partyElement = card.querySelector(".info p:nth-child(2)");
+    const districtElement = card.querySelector(".info p:nth-child(3)");
+
+    // Match the card's MP name with Firestore data
+    const mpName = nameElement.textContent.trim();
+    if (mpsData[mpName]) {
+      const mpData = mpsData[mpName];
+      partyElement.textContent = mpData.party || "Party not available";
+      districtElement.textContent = `${mpData.riding}, ${mpData.riding_province}` || "District not available";
+    }
+  });
+}
+
+// Call the function to update the cards
+updateMPCards();
