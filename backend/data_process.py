@@ -50,11 +50,14 @@ class Data_Process:
             response.raise_for_status()
             
             # Save the PDF locally
-            file_path = os.path.join(self.download_directory, f"{bill_code}.pdf")
+            file_path = "temp/bill.pdf"
             with open(file_path, "wb") as pdf_file:
                 pdf_file.write(response.content)
             
             print(f"PDF downloaded successfully: {file_path}")
+            
+            return file_path
+        
         except requests.HTTPError as http_err:
             print(f"HTTP error occurred: {http_err}")
         except Exception as e:
