@@ -5,8 +5,10 @@ import re
 import requests
 from bs4 import BeautifulSoup
 import database
+import ai_model
 
 db = database.Database()
+model = ai_model.Model()
 
 class Data_Process:
     def __init__(self) -> None:
@@ -144,7 +146,7 @@ class Data_Process:
         return votes
 
     # Parse bill data and return a list of dictionaries
-    def parse_bill_data(self, url, votes, categories, summary):
+    def parse_bill_data(self):
         bills = []
 
         for bill in self.__billdata:
@@ -165,6 +167,9 @@ class Data_Process:
                 
                 # Get voting data
                 votes = self.get_votes(bill_number, session)
+
+                # Get categories and summary
+                summary, categories = model.process_document(url)
 
                 data = {
                     "bill_number": bill_number,
