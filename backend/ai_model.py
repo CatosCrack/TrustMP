@@ -13,6 +13,7 @@ class Model():
         self.__model = genai.GenerativeModel("gemini-2.0-flash-exp")
 
     def process_document(self, url):
+        print("Prompting model")
         # Process document from url
         doc_data = base64.standard_b64encode(httpx.get(url).content).decode("utf-8")
 
