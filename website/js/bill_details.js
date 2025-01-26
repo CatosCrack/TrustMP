@@ -4,7 +4,7 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDhFGSvDL50ISJwhTtPuHFraYZKakorMOc",
+  apiKey: "INSERT_API_KEY",
   authDomain: "hackathon-448621.firebaseapp.com",
   projectId: "hackathon-448621",
   storageBucket: "hackathon-448621.firebasestorage.app",
