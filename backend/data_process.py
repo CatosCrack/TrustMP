@@ -59,19 +59,32 @@ class Data_Process:
         pattern = r'<a.*?>'
         links = re.findall(pattern, html, re.DOTALL)
 
+        flag = False
+
         for link in links:
+            if flag:
+                break
+            try:
+                soup = BeautifulSoup(link, 'html.parser')
+                link = soup.find('a')['href']
+            except:
+                continue
             if "DocumentViewer" in link and "bill" in link:
-                page = urlopen(link)
+                page = urlopen(f"https://www.parl.ca{link}")
                 html = page.read().decode("utf-8")
                 pattern = r'<a.*?>'
                 links = re.findall(pattern, html, re.DOTALL)
                 for link in links:
-                    if "PDF" in link:
-                        print(link)
-                        exit
-            else:
-                print("No bill data found")
-                return None
+                    try:
+                        soup = BeautifulSoup(link, 'html.parser')
+                        link = soup.find('a')['href']
+                        if "PDF" in link:
+                            flag = True
+                            pdf_url = f"https://www.parl.ca{link}"
+                            print(pdf_url)
+                            break 
+                    except:
+                        continue        
         
         try:
             response = requests.get(pdf_url)
@@ -94,12 +107,14 @@ class Data_Process:
 
     # Get the votes of each member of parliament
     def get_votes(self, bill_code, session):
+        print("Fetching votes")
         #Open the URL and get HTML
         url = f"https://www.parl.ca/LegisInfo/en/bill/44-1/{bill_code}"
         page = urlopen(url)
         html = page.read().decode("utf-8")
 
         # Find the vote section for the right session
+        print("Session:" + session)
         if session == "Second reading":
             pattern = r'<div id="house-second-reading.*?Vote'
             print("Created pattern")
@@ -113,15 +128,23 @@ class Data_Process:
         # Fetch the vote link
         pattern_vote = r'<a href=.*?>'
         links = re.findall(pattern_vote, div[0], re.DOTALL)
+        vote_link = None
         for link in links:
             # Only get vote link
-            if "vote" in link:
-                pattern_link = r'w.*?"'
-                vote_link = re.findall(pattern_link, link, re.DOTALL)
-                vote_link = vote_link[0][:-1]
+            try:
+                if "vote" in link:
+                    pattern_link = r'w.*?"'
+                    vote_link = re.findall(pattern_link, link, re.DOTALL)
+                    vote_link = f"https://{vote_link[0][:-1]}"
+                    print("Vote link: " + vote_link)
+            except:
+                continue
 
         # Get voting data
+        response = None
         try:
+            if vote_link is None:
+                return None
             # Fetch the page content
             response = requests.get(vote_link)
             if response.status_code != 200:
@@ -131,6 +154,8 @@ class Data_Process:
             print(f"Error occurred: {e}")
         
         # Parse the page content with BeautifulSoup
+        if response is None:
+            return None
         soup = BeautifulSoup(response.text, 'html.parser')
 
          # Locate the voting table
@@ -154,10 +179,13 @@ class Data_Process:
 
             # Extract name, party, and vote
             name = cells[0].text.strip()
+            idx = name.find("(")
+            name = name[:idx]
+            if "Mr. " in name or "Ms. " in name:
+                name = name[4:]
+            elif "Mrs. " in name:
+                name = name[5:]
             vote = cells[2].text.strip()
-
-            # Handle paired MPs (if the 4th column exists)
-            paired = cells[3].text.strip() if len(cells) > 3 else None
 
             vote_entry = {
                 name: vote
@@ -177,10 +205,10 @@ class Data_Process:
                 print(f"Name: {bill.find("BillNumberFormatted").text}. Stage: {bill.find("LatestCompletedMajorStageEn").text}")
                 continue
             else:
-
                 bill_number = bill.find("BillNumberFormatted").text.lower()
                 session = bill.find("ParlSessionCode").text
                 stage = bill.find("LatestCompletedMajorStageEn").text
+                print(bill_number, stage)
 
                 # Download bill pdf
                 path = self.download_bill_pdf(bill_number)
@@ -200,8 +228,12 @@ class Data_Process:
                     categories = "Not available"
 
                 # Get voting data
-                    votes = self.get_votes(bill_number, session)
-                    print(votes)
+                votes = self.get_votes(bill_number, stage)
+                if votes is None:
+                    votes = "Not available"
+                
+                print("votes: ")
+                print(votes)
 
                 data = {
                     "bill_number": bill_number,
@@ -215,7 +247,7 @@ class Data_Process:
                     "session": session
                 }
 
-                # Append the dictionary to the list
-                bills.append(data)
+                # Upload the bill to Firestore
+                self.__db.upload_bill(data)
 
         return bills

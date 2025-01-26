@@ -11,7 +11,4 @@ processor = data_process.Data_Process(db)
 
 # Get bill data and send to firestore
 bills = processor.parse_bill_data()
-for bill in bills:
-    db.upload_bill(bill)
-    print("MP uploaded")
 
