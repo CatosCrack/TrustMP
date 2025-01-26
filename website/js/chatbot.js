@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyA2uS7wosx1FDZ6nc6zIyvMQcPMWCAucMw';
+const API_KEY = "INSERT_API_KEY",;
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
 
 const chatMessages = document.getElementById('chat-messages');
