@@ -55,11 +55,16 @@ body {
     padding: 10px 20px;
     border: none;
     background-color: #4CAF50;
-    height: 5.6vh;
+    height: 5.7vh;
+    width: 3.2vw;
     color: white;
     font-size: 1rem;
     cursor: pointer;
-    border-radius: 0 15px 15px 0;
+    border: 1px solid black;
+    z-index: 2;
+    position: relative;
+    right: 2px;
+    border-radius: 0 10px 10px 0;
   }
   
   .search-container button:hover {
@@ -119,8 +124,10 @@ body {
     width: 70vw;
     height: 3vh;
     max-width: 500px;
-    border: 1px solid #ffffff;
-    border-radius: 15px 0 0 15px;
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-radius: 10px 0 0 10px;
     outline: none;
 }
 
@@ -201,4 +208,10 @@ justify-content: right;
 #trending{
     position: relative;
     right: 50px;
+}
+
+#searchIcon {
+  height: 25px;
+  position: relative;
+  right: 10px;
 }

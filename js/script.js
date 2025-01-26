@@ -96,3 +96,7 @@ searchBar.addEventListener('input', () => {
     }
 });
 
+document.querySelector("#anitaAnandDiv").addEventListener('click', () => {
+    window.location.href = '../html/mp_person.html';
+})
+
