@@ -13,7 +13,7 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "INSERT_API_KEY",
+  apiKey: precess.env.FIREBASE_API,
   authDomain: "hackathon-448621.firebaseapp.com",
   projectId: "hackathon-448621",
   storageBucket: "hackathon-448621.firebasestorage.app",
@@ -82,8 +82,8 @@ async function populateBills() {
   const secondBillContainer = document.querySelectorAll(".bill")[1]; // Target the second div
 
   // Use the 1st bill for the first div and the 3rd bill for the second div
-  const firstBill = bills[0]; // First bill from the Firestore collection
-  const thirdBill = bills[2]; // Third bill from the Firestore collection
+  const firstBill = bills[4]; // First bill from the Firestore collection
+  const thirdBill = bills[6]; // Third bill from the Firestore collection
 
   // Update the HTML for both bill containers
   updateBillHTML(firstBillContainer, firstBill, "Anita Anand");
