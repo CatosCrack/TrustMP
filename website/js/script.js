@@ -1,3 +1,7 @@
+document.querySelector("#anitaAnandDiv").addEventListener('click', () => {
+    window.location.replace("../website/html/mp_person.html");
+});
+
 const suggestionsData = [
     {
         text: "Rachel Bendayan",
@@ -96,16 +100,14 @@ searchBar.addEventListener('input', () => {
     }
 });
 
-document.querySelector("#anitaAnandDiv").addEventListener('click', () => {
-    window.location.href = '../html/mp_person.html';
-})
+
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDhFGSvDL50ISJwhTtPuHFraYZKakorMOc",
+    apiKey: precess.env.FIREBASE_API,
     authDomain: "hackathon-448621.firebaseapp.com",
     projectId: "hackathon-448621",
     storageBucket: "hackathon-448621.firebasestorage.app",

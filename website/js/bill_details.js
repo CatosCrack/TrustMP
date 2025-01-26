@@ -4,7 +4,7 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDhFGSvDL50ISJwhTtPuHFraYZKakorMOc",
+  apiKey: precess.env.FIREBASE_API,
   authDomain: "hackathon-448621.firebaseapp.com",
   projectId: "hackathon-448621",
   storageBucket: "hackathon-448621.firebasestorage.app",
@@ -73,3 +73,11 @@ async function populateBillDetails() {
 
 // Call the function to populate bill details
 populateBillDetails();
+
+document.querySelector("#submitButton").addEventListener("click", () => {
+  window.location.href = "../html/chatbot.html";
+})
+
+document.querySelector(".back-button").addEventListener('click', () => {
+  window.location.href = '../html/mp_person.html';
+})
