@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 import re
 import requests
-import BeautifulSoup
+from bs4 import BeautifulSoup
 import database
 
 db = database.Database()
