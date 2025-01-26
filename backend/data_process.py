@@ -41,6 +41,24 @@ class Data_Process:
         return mps
     
     # TODO: Add Vlad's code here
+    def download_bill_pdf(self, bill_code):
+        pdf_url = f"https://www.parl.ca/Content/Bills/441/Private/{bill_code}/{bill_code}_1/{bill_code}_1.PDF"
+        
+        try:
+            response = requests.get(pdf_url)
+            # Raise an error for failed HTTP requests
+            response.raise_for_status()
+            
+            # Save the PDF locally
+            file_path = os.path.join(self.download_directory, f"{bill_code}.pdf")
+            with open(file_path, "wb") as pdf_file:
+                pdf_file.write(response.content)
+            
+            print(f"PDF downloaded successfully: {file_path}")
+        except requests.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
     # Parse bill data and return a list of dictionaries
     def parse_bill_data(self, url, votes, categories, summary):
