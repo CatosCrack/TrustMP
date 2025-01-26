@@ -15,16 +15,16 @@ class Database:
         self.__store = firestore.client()
 
     # Uploads an structured document to the MPS collection in Firestore
-    def upload_mp(self, data):
+    def upload_mp(self, data_mp):
         data = {
-            "date_elected": data["date_elected"],
-            "party": data["party"],
-            "riding": data["riding"],
-            "riding_province": data["riding_province"],
+            "date_elected": data_mp["date_elected"],
+            "party": data_mp["party"],
+            "riding": data_mp["riding"],
+            "riding_province": data_mp["riding_province"],
         }
 
         # Upload a document with the name of the MP as the document ID
-        update_time, doc_ref = self.__store.collection("MPS").document(data["name"]).add(data)
+        self.__store.collection("MPS").document(data_mp["name"]).set(data)
 
     # Upload an structured document to the Bills collection in Firestore
     def upload_bill(self, data):

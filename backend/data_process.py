@@ -7,24 +7,23 @@ from bs4 import BeautifulSoup
 import database
 import ai_model
 
-db = database.Database()
 model = ai_model.Model()
 
 class Data_Process:
-    def __init__(self) -> None:
-        try:
-            # Get XML data for MPs
-            response = requests.get("https://www.ourcommons.ca/Members/en/search/XML")
-            response.raise_for_status()
-            self.__mpdata = ET.fromstring(response.text)
+    def __init__(self, db) -> None:
+        # Get XML data for MPs
+        response = requests.get("https://www.ourcommons.ca/Members/en/search/XML")
+        response.raise_for_status()
+        self.__mpdata = ET.fromstring(response.text)
             
-            # Get XML data for bills
-            tree = ET.parse("backend/datasets/bills.xml")
-            self.__billdata = tree.getroot()
+        # Get XML data for bills
+        tree = ET.parse("datasets/bills.xml")
+        self.__billdata = tree.getroot()
 
-            print("Data fetched successfully")
-        except:
-            print("Error fetching data")
+        print("Data fetched successfully")
+
+        # Set database instance
+        self.__db=db
 
     # Parse MP data and return a list of dictionaries
     def parse_mp_data(self):
@@ -51,7 +50,28 @@ class Data_Process:
     
     # Download the PDF from the bill website
     def download_bill_pdf(self, bill_code):
-        pdf_url = f"https://www.parl.ca/Content/Bills/441/Private/{bill_code}/{bill_code}_1/{bill_code}_1.PDF"
+        #Open the URL and get HTML
+        url = f"https://www.parl.ca/LegisInfo/en/bill/44-1/{bill_code}"
+        page = urlopen(url)
+        html = page.read().decode("utf-8")
+
+        # Define search pattern
+        pattern = r'<a.*?>'
+        links = re.findall(pattern, html, re.DOTALL)
+
+        for link in links:
+            if "DocumentViewer" in link and "bill" in link:
+                page = urlopen(link)
+                html = page.read().decode("utf-8")
+                pattern = r'<a.*?>'
+                links = re.findall(pattern, html, re.DOTALL)
+                for link in links:
+                    if "PDF" in link:
+                        print(link)
+                        exit
+            else:
+                print("No bill data found")
+                return None
         
         try:
             response = requests.get(pdf_url)
@@ -82,8 +102,10 @@ class Data_Process:
         # Find the vote section for the right session
         if session == "Second reading":
             pattern = r'<div id="house-second-reading.*?Vote'
-        elif session == "Third reading":
+            print("Created pattern")
+        elif session == "Third reading" or session == "Royal assent":
             pattern = r'<div id="house-third-reading.*?Vote'
+            print("Created pattern")
 
         # Fetch the div section
         div = re.search(pattern, html, re.DOTALL)
@@ -151,25 +173,35 @@ class Data_Process:
 
         for bill in self.__billdata:
             # Create a dictionary to append to the list
-            if "C-" not in bill.find("BillNumberFormatted").text and "First reading" in bill.find("LatestCompletedMajorStageEn"):
+            if "c-" not in bill.find("BillNumberFormatted").text.lower() or "First" in bill.find("LatestCompletedMajorStageEn").text:
                 print(f"Name: {bill.find("BillNumberFormatted").text}. Stage: {bill.find("LatestCompletedMajorStageEn").text}")
                 continue
             else:
 
                 bill_number = bill.find("BillNumberFormatted").text.lower()
                 session = bill.find("ParlSessionCode").text
+                stage = bill.find("LatestCompletedMajorStageEn").text
 
                 # Download bill pdf
                 path = self.download_bill_pdf(bill_number)
+                print(path)
 
-                # Upload the PDF to Cloud Storage
-                url = db.upload_file(path, bill_number)
-                
+                if path:
+                    print("Path exists")
+                    # Upload the PDF to Cloud Storage
+                    url = self.__db.upload_file(path, bill_number)
+                    print(url)
+
+                    # Get categories and summary
+                    summary, categories = model.process_document(url)
+                else:
+                    url = "Not available"
+                    summary = "Not available"
+                    categories = "Not available"
+
                 # Get voting data
-                votes = self.get_votes(bill_number, session)
-
-                # Get categories and summary
-                summary, categories = model.process_document(url)
+                    votes = self.get_votes(bill_number, session)
+                    print(votes)
 
                 data = {
                     "bill_number": bill_number,
@@ -179,7 +211,7 @@ class Data_Process:
                     "summary": summary,
                     "url": url,
                     "votes": votes,
-                    "stage": bill.find("LatestCompletedMajorStageEn").text,
+                    "stage": stage,
                     "session": session
                 }
 
