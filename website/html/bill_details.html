@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill Details</title>
+  <link rel="stylesheet" href="../styles/bill_details.css">
+</head>
+<body>
+    
+  <div class="container">
+    <button class="back-button">&larr;</button>
+   
+    <div class="header">
+      <div class="title">
+        <h1>Better Health Care Act</h1>
+        <p>Bill Date: 22/05/2025</p>
+      </div>
+      <div class="bill-id">
+        <h2>S-1</h2>
+      </div>
+      <div class="category">
+        <h1>Healthcare</h1>
+        <p>Vote: Nay</p>
+      </div>
+    </div>
+
+    <div class="response-box">
+      <!-- The AI response will be displayed here -->
+    </div>
+
+    <div class="prompt-container">
+      <input
+        type="text"
+        placeholder="Ask me anything!"
+        class="prompt-input"
+        id="userPrompt"
+      />
+      <button class="submit-button" id="submitButton">&#9658;</button>
+    </div>
+  </div>
+
+  <script type="module" src="../js/bill_details.js"></script>
+</body>
+</html>
