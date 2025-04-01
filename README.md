@@ -166,5 +166,5 @@ Firestore’s ability to handle semi-structured data means you can store complex
 This makes it a good choice when building applications that need to process and store large datasets, as well as serve them quickly to users. Working within the Google Cloud
 portfolio of services also means simplified management of IAM roles and avoidance of CORS policy issues. 
 
-## Acknowledgements
+# Acknowledgements
 This readme was created by Camilo Galvis. Thanks to Vlad Glezin, Nirmal Patel and Eric Scherpereel for the late nights to complete this hackathon project!
