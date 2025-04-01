@@ -15,10 +15,16 @@ about the bill and wants to learn more, users are able to chat with a Gemini cha
 in an interactive and unprecedented way.
 
 # Content
+- [How was the data collected and processed?](#how-was-the-data-collected-and-processed)
+      - [Module: data_process.py](#data_process.py)
+      - [Module: ai_model.py](ai_model.py)
+      - [Module: database.py](database.py)
+- [Where is the data stored?](#where-is-the-data-stored)
+      - [Why we chose a NoSQL database service?](#why-we-chose-a-NoSQL-database-service)
 
 # How was the data collected and processed?
 To collect and process the data, we created multiple python modules to help us scrap, organize and synthetize information in an efficient manner, leveraging information found
-on the Canadian Parliement website (specifically we used this [XML data](#https://www.ourcommons.ca/Members/en/search/XML) and this [dataset](#https://www.ourcommons.ca/en/open-data#LegisInfo)).
+on the Canadian Parliement website (specifically we used this [XML data](https://www.ourcommons.ca/Members/en/search/XML) and this [dataset](https://www.ourcommons.ca/en/open-data#LegisInfo)).
 
 ## data_process.py
 This module processes and analyzes data related to Members of Parliament (MPs) and legislative bills. 
@@ -159,3 +165,6 @@ Firestore’s ability to handle semi-structured data means you can store complex
 - Easy Integration: Firestore integrates seamlessly with other Google Cloud services, such as Firebase Storage (for PDFs) and Google’s AI services.
 This makes it a good choice when building applications that need to process and store large datasets, as well as serve them quickly to users. Working within the Google Cloud
 portfolio of services also means simplified management of IAM roles and avoidance of CORS policy issues. 
+
+## Acknowledgements
+This readme was created by Camilo Galvis. Thanks to Vlad Glezin, Nirmal Patel and Eric Scherpereel for the late nights to complete this hackathon project!
