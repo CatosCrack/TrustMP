@@ -1,10 +1,10 @@
 This is the repo of the hackathon project for McHack 2025.
 
 # Participants
-Camilo Galvis - Data scrapping, data processing, Google Cloud Integrations
-Vlad Glezin - Data scrapping
-Nirmal Patel - Frontend development
-Eric Scherpereel - Frontend development
+- Camilo Galvis - Data scrapping, data processing, Google Cloud Integrations
+- Vlad Glezin - Data scrapping
+- Nirmal Patel - Frontend development
+- Eric Scherpereel - Frontend development
 
 # Objective
 We wanted to develop a platform to enhance transparency in the Canadian legislative process.
@@ -16,11 +16,11 @@ in an interactive and unprecedented way.
 
 # Content
 - [How was the data collected and processed?](#how-was-the-data-collected-and-processed)
-      - [Module: data_process.py](#data_process.py)
-      - [Module: ai_model.py](ai_model.py)
-      - [Module: database.py](database.py)
+  - [Module: data_process.py](#data_processpy)
+  - [Module: ai_model.py](#ai_modelpy)
+  - [Module: database.py](#databasepy)
 - [Where is the data stored?](#where-is-the-data-stored)
-      - [Why we chose a NoSQL database service?](#why-we-chose-a-NoSQL-database-service)
+  - [Why we chose a NoSQL database service?](#why-we-chose-a-nosql-database-service)
 
 # How was the data collected and processed?
 To collect and process the data, we created multiple python modules to help us scrap, organize and synthetize information in an efficient manner, leveraging information found
@@ -44,7 +44,7 @@ This module relies on the following libraries:
 
 ### Usage
 To use the module, instantiate the Data_Process class by passing a database instance:
-```
+```python
 from database import Database
 from data_process import Data_Process
 
@@ -52,19 +52,19 @@ db = Database()
 data_processor = Data_Process(db)
 ```
 - data_process.parse_mp_data(): Returns a list of dictionaries about Memebers of Parliament
-```
+```python
 mp_data = data_processor.parse_mp_data()
 ```
 - data_process.parse_bill_data(): Fetches bill details, downloads PDFs, processes text, and uploads to the database.
-```
+```python
 data_processor.parse_bill_data()
 ```
 - data_process.download_bill_pdf(String bill_name): Downloads and saves the PDF of a specified bill. Returns the path where the file was donwloaded.
-```
+```python
 pdf_path = data_processor.download_bill_pdf("c-10")
 ```
 - data_process.get_votes(String bill_code, String session): Returns a list of MPs and their votes for a specified bill and session.
-```
+```python
 votes = data_processor.get_votes("c-10", "Second reading")
 ```
 
@@ -85,7 +85,7 @@ This module relies on the following libraries:
 
 ### Usage
 To use the module, instantiate the Model class:
-```
+```python
 from ai_model import Model
 
 model = Model()
@@ -93,13 +93,13 @@ model = Model()
 ai_model.process_document(String document_url): Returns
 - summary: A textual summary of the document.
 - keywords: A list of relevant keywords for classification.
-```
+```python
 summary, keywords = model.process_document("https://example.com/document.pdf")
 ```
 
 ### Configuration
 The API key for Gemini AI must be stored in secrets/gemini.json in the following format:
-```
+```json
 {
     "private_key": "YOUR_GEMINI_API_KEY"
 }
@@ -120,21 +120,21 @@ This module relies on the following libraries:
 
 ### Usage
 The class initializes the Firestore client and Cloud Storage bucket using Firebase credentials.
-```
+```python
 import database
 
 db = database.Database()
 ```
 - database.upload_mp(List data_mp): Takes a list of MP as formatted by [data_process.parse_mp_data()](#data_process.py)
-```
+```python
 database.upload_mp(data_mp)
 ```
 - database.upload_bill(data): Takes a list of bill information as formatted by [data_process.parse_bill_data()](#data_process.py)
-```
+```python
 database.upload_bill(data)
 ```
 - database.upload_file(String path, String bill_code): Uploads a PDF file to Firebase Cloud Storage. Returns the public URL of the resource
-```
+```python
 file_url = db.upload_file("/path/to/bill.pdf", "C-10")
 ```
 
